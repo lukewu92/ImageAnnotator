@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Image Annotator</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+  <div class="app">
+    <div class="toolbar">
+      <div data-component="imageCache" class="image-cache"></div>
+      <input data-component="fileInput" type="file" class="file-input" multiple />
+      <button style="margin-right: auto">Load annotations</button>
+      <button style="margin-left: auto" class="secondary">Export</button>
+    </div>
+    <main class="main">
+      <div data-component="imagesPanel" class="side-panel side-panel--images">
+        <button data-component="toggleImagesPanelButton" class="side-panel__toggle" title="Show/Hide Images">
+          Images
+        </button>
+        <div data-component="imageListContainer" class="image-list-container"></div>
+      </div>
+  
+      <div data-component="imageSection" class="image-section">
+        <div data-component="canvasContainer" class="canvas-container">
+          <canvas data-component="canvas" class="canvas"></canvas>
+          <div class="editor">
+            <div class="mouse-position" data-component="mousePosition">
+              <span class="mouse-dot"></span>
+              <span class="mouse-line top" data-component="mouseLineTop"></span>
+              <span class="mouse-line bottom" data-component="mouseLineBottom"></span>
+              <span class="mouse-line left" data-component="mouseLineLeft"></span>
+              <span class="mouse-line right" data-component="mouseLineRight"></span>
+              <span class="mouse-coordinates" data-component="mouseCoordinates">
+                x: 74, y: 74
+              </span>
+            </div>
+          </div>
+        </div>
+  
+        <div class="action-buttons">
+          <button data-component="deleteImageButton" class="secondary">Delete</button>
+          <button data-component="uploadImageButton">Upload new image</button>
+        </div>
+  
+        <div class="image-info">
+          <button data-component="previousButton" class="small-icon" title="previous">
+            <img src="/images/left.svg" alt="Previous" />
+          </button>
+          <div data-component="selected-file-name" class="file-name">
+            somerandomname.png
+          </div>
+          <button data-component="nextButton" class="small-icon" title="next">
+            <img src="/images/right.svg" alt="Next" />
+          </button>
+        </div>
+      </div>
+  
+      <div data-component="annotationsPanel" class="side-panel side-panel--annotations">
+        <button data-component="toggleAnnotationsPanelButton" class="side-panel__toggle" title="Show/Hide Annotations">
+          Annotations
+        </button>
+        <div data-component="annotationListContainer" class="annotation-list-container"></div>
+      </div>
+  
+    </main>
+  </div>
+  
+  <script src="./js/main.js" defer type='module'></script>
+</body>
+
+</html>
