@@ -3,6 +3,8 @@
 ## Requirements
 Develop an Image annotator web application with just vanillaJS without using any external libraries.
 
+![](https://github.com/ImageAnnotator/preview.gif)
+
 ## Features
 - Annotate multiple images with multiple annotations
 - Switch between images seamlessly by using side gallery or left right arrows.
