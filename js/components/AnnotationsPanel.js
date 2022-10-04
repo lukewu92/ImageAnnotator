@@ -47,10 +47,7 @@ export class AnnotationsPanel {
   deleteAnnotationAtIndex = (index) => {
     const imageName = this.getImageInfo()?.name;
     const annotations = [...this.getImageAnnotationInfo()];
-    console.log("old annotation", annotations);
     annotations.splice(index, 1);
-    console.log("imageName", imageName);
-    console.log("new annotations", annotations);
     this.setAnnotationData({
       [imageName]: annotations,
     });
@@ -84,7 +81,6 @@ export class AnnotationsPanel {
       inputElem.dataset.annotationFieldIndex = index;
       inputElem.value = label;
       inputElem.onchange = (e) => {
-        console.log("value", e.target.value);
         this.updateAnnotationLabel(index, e.target.value);
       };
       inputElem.onfocus = () =>
@@ -109,24 +105,6 @@ export class AnnotationsPanel {
       this.annotationList.appendChild(elem);
 
       elem.onclick = () => inputElem.focus();
-
-      // elem.onmouseenter = (e) => {
-      //   console.log("onmouseenter");
-      //   this.setAnnotationData({
-      //     selectedAnnotationIndex: index,
-      //   });
-      // };
-      // elem.onmouseleave = (e) => {
-      //   if (inputElem === document.activeElement) {
-      //     return (inputElem.onblur = () =>
-      //       this.setAnnotationData({
-      //         selectedAnnotationIndex: null,
-      //       }));
-      //   }
-      //   this.setAnnotationData({
-      //     selectedAnnotationIndex: null,
-      //   });
-      // };
     });
   };
 
@@ -137,7 +115,6 @@ export class AnnotationsPanel {
       const selectedIndex = this.getAnnotationData()?.selectedAnnotationIndex;
       if (elemIndex == selectedIndex) {
         if (!elem.classList.contains("highlight")) {
-          console.log("highlight");
           elem.classList.add("highlight");
         }
       } else {

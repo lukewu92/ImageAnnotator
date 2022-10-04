@@ -32,8 +32,6 @@ export class ImageInfo {
     const containerHeight = this.canvasContainer.clientHeight;
     this.canvas.width = containerWidth;
     this.canvas.height = containerHeight;
-    // console.log("this.canvas.width", this.canvas.width);
-    // console.log("this.canvas.height", this.canvas.height);
   }
 
   redraw() {

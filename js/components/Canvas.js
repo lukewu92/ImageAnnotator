@@ -1,6 +1,8 @@
 import {
   CanvasContainer,
   CanvasElement,
+  ClearAllAnnotationButton,
+  DeleteImageButton,
   Editor,
   ImageOffset,
   MouseCoordinates,
@@ -46,6 +48,8 @@ export class Canvas {
     this.getMousePositionInfo = this.getMousePositionInfo.bind(this);
     this.getImageAnnotationInfo = this.getImageAnnotationInfo.bind(this);
 
+    this.clearAllAnnotations = ClearAllAnnotationButton;
+    this.deleteButton = DeleteImageButton;
     this.editor = Editor;
     this.canvas = CanvasElement;
     this.canvasContainer = CanvasContainer;
@@ -93,6 +97,8 @@ export class Canvas {
   };
 
   init() {
+    // clearAnnotationsFunction =
+
     this.clearDefaults();
     // Detect size changes for element, works better than window.onresize
     const resize_ob = new ResizeObserver((entries) => {
@@ -117,11 +123,36 @@ export class Canvas {
     this.canvasImage.addEventListener("load", this.drawImageToCanvas);
 
     const mouseDownEvent = (e) => {
+      let clientX, clientY;
+      if (
+        e.type == "touchstart" ||
+        e.type == "touchmove" ||
+        e.type == "touchend" ||
+        e.type == "touchcancel"
+      ) {
+        const touch = e?.changedTouches?.[0];
+        clientX = touch?.pageX;
+        clientY = touch?.pageY;
+      } else if (
+        e.type == "mousedown" ||
+        e.type == "mouseup" ||
+        e.type == "mousemove" ||
+        e.type == "mouseover" ||
+        e.type == "mouseout" ||
+        e.type == "mouseenter" ||
+        e.type == "mouseleave"
+      ) {
+        clientX = e.clientX;
+        clientY = e.clientY;
+      }
       let rect = this.canvas.getBoundingClientRect();
-      let x = Math.round(e.clientX - rect.left);
-      let y = Math.round(e.clientY - rect.top);
+      let x = Math.round(clientX - rect.left);
+      let y = Math.round(clientY - rect.top);
 
-      if (e && (e.which == 1 || e.button == 0)) {
+      if (
+        e &&
+        (e.which == 0 || e.which == 1 || e.which === 2 || e.button == 0)
+      ) {
         const {
           mouseInBoundaryX,
           mouseInBoundaryY,
@@ -132,9 +163,7 @@ export class Canvas {
           insideAnnotationX,
           insideAnnotationY,
         } = this.getMousePositionInfo();
-        console.log("left click down");
         // Select annotation index instead
-        console.log("annotationsIndexInBoundary", annotationsIndexInBoundary);
         if (annotationsIndexInBoundary !== null) {
           this.setState({
             mouseDownAnnotation: {
@@ -176,9 +205,7 @@ export class Canvas {
         //   });
         // }
       }
-
       if (e && (e.which == 2 || e.button == 4)) {
-        console.log("middle click down");
         // Ignore middle click if left click already happened
         this.setState({
           mouseMiddleDown: true,
@@ -204,20 +231,38 @@ export class Canvas {
     };
 
     const mouseMoveEvent = (e) => {
+      let clientX, clientY;
+      if (
+        e.type == "touchstart" ||
+        e.type == "touchmove" ||
+        e.type == "touchend" ||
+        e.type == "touchcancel"
+      ) {
+        const touch = e?.changedTouches?.[0];
+        clientX = touch?.pageX;
+        clientY = touch?.pageY;
+      } else if (
+        e.type == "mousedown" ||
+        e.type == "mouseup" ||
+        e.type == "mousemove" ||
+        e.type == "mouseover" ||
+        e.type == "mouseout" ||
+        e.type == "mouseenter" ||
+        e.type == "mouseleave"
+      ) {
+        clientX = e.clientX;
+        clientY = e.clientY;
+      }
       // important: correct mouse position:
       let rect = this.canvas.getBoundingClientRect();
-      let x = Math.round(e.clientX - rect.left);
-      let y = Math.round(e.clientY - rect.top);
-      // console.log("rect", rect);
-      // console.log("x", x);
-      // console.log("y", y);
+      let x = Math.round(clientX - rect.left);
+      let y = Math.round(clientY - rect.top);
       this.setState({
         mousePosition: {
           x,
           y,
         },
       });
-      // this.drawMouseOnImagePosition(x, y);
 
       // Track user dragging annotations
       if (this.hasClickedOnAnnotation()) {
@@ -280,8 +325,7 @@ export class Canvas {
 
     const mouseUpEvent = (e) => {
       const state = this.getState();
-      if (e && (e.which == 1 || e.button == 0)) {
-        console.log("left click up");
+      if (e && (e.which == 0 || e.which == 1 || e.button == 0)) {
         const imgInfo = this.getImageInfo();
 
         // Check if there is box, if so, create a new annotation
@@ -293,7 +337,6 @@ export class Canvas {
             this.getState()?.draggingAnnotationOffset;
 
           const annotations = [...this.getAnnotationData()?.[imageName]];
-          console.log("annotations", annotations);
           annotations[selectedAnnotationIndex] = {
             ...annotations[selectedAnnotationIndex],
             x:
@@ -363,7 +406,6 @@ export class Canvas {
       }
 
       if (e && (e.which == 2 || e.button == 4)) {
-        console.log("middle click up");
         this.setState({
           mouseMiddleDown: null,
           mouseMiddleDownPosition: null,
@@ -389,9 +431,6 @@ export class Canvas {
       }
     };
 
-    // Add mouseover event on canvas to detect mouse movement on canvas
-    this.canvas.onmousemove = mouseMoveEvent;
-
     // Reset offset button
     this.resetImagePositionButton.addEventListener("click", () =>
       this.setState({ imageOffset: null })
@@ -399,8 +438,14 @@ export class Canvas {
 
     // On mouse down
     this.canvas.onmousedown = mouseDownEvent;
+    this.canvas.addEventListener("touchstart", mouseDownEvent);
+
+    // Add mouseover event on canvas to detect mouse movement on canvas
+    this.canvas.onmousemove = mouseMoveEvent;
+    this.canvas.addEventListener("touchmove", mouseMoveEvent);
 
     this.canvas.onmouseup = mouseUpEvent;
+    this.canvas.addEventListener("touchend", mouseUpEvent);
   }
 
   hasClickedOnAnnotation() {
@@ -541,9 +586,6 @@ export class Canvas {
           mouseInBoundaryY >= annotations[i].y &&
           mouseInBoundaryY <= annotations[i].y + annotations[i].height
         ) {
-          // console.log(
-          //   `in bound with label ${annotations[i].label}, index at ${i}`
-          // );
           annotationsIndexInBoundary = i;
           insideAnnotationWidth = annotations[i].width;
           insideAnnotationHeight = annotations[i].height;
@@ -670,6 +712,7 @@ export class Canvas {
   redraw() {
     this.clearCanvas();
     const state = this.getState();
+    const imageAnnotationInfo = this.getImageAnnotationInfo();
     const imageData = this.getImageData();
     const selectedFile =
       this.getImageData()?.files[this.getState()?.selectedFileIndex];
@@ -688,6 +731,31 @@ export class Canvas {
       if (!this.editor.classList.contains("invisible")) {
         this.editor.classList.add("invisible");
       }
+    }
+
+    if (
+      !imageData?.files?.length &&
+      !this.deleteButton?.hasAttribute("hidden")
+    ) {
+      this.deleteButton.setAttribute("hidden", true);
+    }
+
+    if (imageData?.files?.length && this.deleteButton?.hasAttribute("hidden")) {
+      this.deleteButton.removeAttribute("hidden");
+    }
+
+    if (
+      !imageAnnotationInfo?.length &&
+      !this.clearAllAnnotations?.hasAttribute("hidden")
+    ) {
+      this.clearAllAnnotations?.setAttribute("hidden", true);
+    }
+
+    if (
+      imageAnnotationInfo?.length &&
+      this.clearAllAnnotations?.hasAttribute("hidden")
+    ) {
+      this.clearAllAnnotations?.removeAttribute("hidden");
     }
   }
 }

@@ -1,6 +1,7 @@
 import { AnnotationsPanel, Canvas, ImageInfo, ImagesPanel, UploadButton } from './components/index.js';
 import { ANNOTATION_DATA_KEY, APP_STATE_KEY } from './constants/localStorageKeys.js';
 import {
+  ClearAllAnnotationButton,
   DataLoader,
   DeleteImageButton,
   ExportButton,
@@ -76,6 +77,7 @@ class MainApp {
     this.getGettersAndSetters = this.getGettersAndSetters.bind(this);
 
     this.deleteButton = DeleteImageButton;
+    this.clearAnnotations = ClearAllAnnotationButton;
     this.uploadButton = UploadImageButton;
     this.previousButton = PreviousButton;
     this.nextButton = NextButton;
@@ -119,7 +121,6 @@ class MainApp {
 
     // Load functionality
     this.loadButton.addEventListener("click", () => {
-      // console.log("click");
       this.dataLoader.click();
     });
 
@@ -128,7 +129,6 @@ class MainApp {
       var reader = new FileReader();
       reader.onload = (e) => {
         const dataObject = JSON.parse(e.target.result);
-        console.log("dataObject", dataObject);
         // Generate blobs
         const files = dataObject?.imageData?.files;
         const processedImageData = [];
@@ -142,7 +142,6 @@ class MainApp {
             base64Data,
           });
         });
-        console.log("processedImageData", processedImageData);
         this.setImageData({
           files: processedImageData,
         });
@@ -158,6 +157,15 @@ class MainApp {
       files.splice(selectedFileIndex, 1);
       this.setImageData({ files });
       this.setState({ selectedFileIndex: 0 });
+    };
+
+    // Clear annotations functionality
+    this.clearAnnotations.onclick = (e) => {
+      const selectedFileIndex = this.state?.selectedFileIndex;
+      const imageName = this.imageData?.files[selectedFileIndex]?.name;
+      this.setAnnotationData({
+        [imageName]: [],
+      });
     };
 
     this.redraw();
@@ -197,11 +205,6 @@ class MainApp {
         ...this.imageData,
         ...newData,
       };
-      // window.localStorage.setItem(
-      //   IMAGE_DATA_KEY,
-      //   JSON.stringify(this.imageData)
-      // );
-      // console.log("image data", this.imageData);
       this.redraw();
     }
   }
@@ -221,7 +224,6 @@ class MainApp {
         ANNOTATION_DATA_KEY,
         JSON.stringify(this.annotationData)
       );
-      console.log("annotationData", this.annotationData);
       this.redraw();
     }
   }
@@ -231,20 +233,6 @@ class MainApp {
     this.imagesPanel.redraw();
     this.annotationsPanel.redraw();
     this.imageInfo.redraw();
-
-    if (
-      !this.state?.files?.length &&
-      !this.deleteButton?.hasAttribute("hidden")
-    ) {
-      this.deleteButton.setAttribute("hidden", true);
-    }
-
-    if (
-      this.state?.files?.length &&
-      this.deleteButton?.hasAttribute("hidden")
-    ) {
-      this.deleteButton.removeAttribute("hidden");
-    }
   }
 }
 

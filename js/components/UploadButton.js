@@ -16,7 +16,6 @@ export class UploadButton {
 
   init() {
     this.uploadImageButton.addEventListener("click", () => {
-      // console.log("click");
       this.fileInput.click();
     });
     this.fileInput.addEventListener(

@@ -92,6 +92,10 @@ export const SelectedFileName = document.querySelector(
   '[data-component="selected-file-name"]'
 );
 
+export const ClearAllAnnotationButton = document.querySelector(
+  '[data-component="clearAllAnnotations"]'
+);
+
 export const DeleteImageButton = document.querySelector(
   '[data-component="deleteImageButton"]'
 );

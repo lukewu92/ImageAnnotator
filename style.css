@@ -163,6 +163,7 @@ button:disabled {
   background-color: var(--toggle-button-active);
   margin-left: auto;
 }
+
 .side-panel__toggle--images {
   margin-right: auto;
   margin-left: unset;
@@ -213,7 +214,6 @@ button:disabled {
   }
   .side-panel--annotations {
     right: 24px;
-    pointer-events: none;
     background-color: rgb(30 41 59 / 70%);
   }
   .side-panel--images {
@@ -239,6 +239,9 @@ button:disabled {
   }
   .image-list-item {
     max-width: min(50% - 8px);
+    pointer-events: auto;
+  }
+  .annotation-list-item {
     pointer-events: auto;
   }
 }

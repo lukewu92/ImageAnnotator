@@ -75,7 +75,6 @@ export class ImagesPanel {
       this.previousSelectedFileIndex = this.getState()?.selectedFileIndex;
       const allImages = document.querySelectorAll(".image-list-item");
       allImages.forEach((image, index) => {
-        console.log("index", index);
         if (this.getState()?.selectedFileIndex === index) {
           if (!image?.classList?.contains("active")) {
             image?.classList?.add("active");
