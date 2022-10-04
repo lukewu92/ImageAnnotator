@@ -53,6 +53,7 @@ export class ImageInfo {
     const fileNameContent = this.fileName.textContent;
     if (fileNameContent !== fileName) {
       this.fileName.textContent = fileName;
+      this.fileName.setAttribute("title", fileName);
     }
 
     // Update button status

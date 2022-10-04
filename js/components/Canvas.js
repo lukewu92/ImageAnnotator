@@ -149,11 +149,7 @@ export class Canvas {
       let rect = this.canvas.getBoundingClientRect();
       let x = Math.round(clientX - rect.left);
       let y = Math.round(clientY - rect.top);
-
-      if (
-        e &&
-        (e.which == 0 || e.which == 1 || e.which === 2 || e.button == 0)
-      ) {
+      if (e && (e.which == 0 || e.which == 1 || e.button == 0)) {
         const {
           mouseInBoundaryX,
           mouseInBoundaryY,
@@ -640,6 +636,7 @@ export class Canvas {
       state.mouseDownPosition.x !== state.mousePosition.x &&
       state.mouseDownPosition.y !== state.mousePosition.y
     ) {
+      console.log("hasLeftClicked");
       const mouseDownPosition = state?.mouseDownPosition;
       const temporaryLineOffset = state?.temporaryLineOffset;
       const initialX = mouseDownPosition.mouseInBoundaryX;

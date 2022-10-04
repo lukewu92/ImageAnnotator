@@ -1,5 +1,5 @@
 import { AnnotationsPanel, Canvas, ImageInfo, ImagesPanel, UploadButton } from './components/index.js';
-import { ANNOTATION_DATA_KEY, APP_STATE_KEY } from './constants/localStorageKeys.js';
+import { ANNOTATION_DATA_KEY, APP_STATE_KEY, IMAGE_DATA_KEY } from './constants/localStorageKeys.js';
 import {
   ClearAllAnnotationButton,
   DataLoader,
@@ -49,16 +49,16 @@ class MainApp {
 
     // Load image data from localStorage or create defaults, might be deprecated due to constraints on localStorage size limit
     this.imageData = defaultImageData;
-    // const imageData = window.localStorage.getItem(IMAGE_DATA_KEY);
-    // if (imageData === null) {
-    //   window.localStorage.setItem(
-    //     IMAGE_DATA_KEY,
-    //     JSON.stringify(defaultImageData)
-    //   );
-    //   this.imageData = defaultImageData;
-    // } else {
-    //   this.imageData = JSON.parse(imageData);
-    // }
+    const imageData = window.localStorage.getItem(IMAGE_DATA_KEY);
+    if (imageData === null) {
+      window.localStorage.setItem(
+        IMAGE_DATA_KEY,
+        JSON.stringify(defaultImageData)
+      );
+      this.imageData = defaultImageData;
+    } else {
+      this.imageData = JSON.parse(imageData);
+    }
 
     // Check stored states
     const appState = window.localStorage.getItem(APP_STATE_KEY);
@@ -100,6 +100,27 @@ class MainApp {
     this.uploadButton.init();
     this.canvas.init();
     this.imageInfo.init();
+
+    //Load storage data
+    if (this.imageData?.files) {
+      console.log("files");
+      // Generate blobs
+      const files = this.imageData?.files;
+      const processedImageData = [];
+      files.forEach((file) => {
+        const base64Data = file.base64Data;
+        const blob = base64ToBlob(base64Data, "image/jpeg");
+        const src = URL.createObjectURL(blob);
+        processedImageData.push({
+          ...file,
+          src,
+          base64Data,
+        });
+      });
+      this.setImageData({
+        files: processedImageData,
+      });
+    }
 
     // Export functionality
     this.exportButton.addEventListener("click", () => {
@@ -205,6 +226,10 @@ class MainApp {
         ...this.imageData,
         ...newData,
       };
+      window.localStorage.setItem(
+        IMAGE_DATA_KEY,
+        JSON.stringify(this.imageData)
+      );
       this.redraw();
     }
   }
