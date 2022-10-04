@@ -12,13 +12,14 @@
   <div class="app">
     <div class="toolbar">
       <div data-component="imageCache" class="image-cache"></div>
+      <input data-component="dataLoader" type="file" class="file-input" />
       <input data-component="fileInput" type="file" class="file-input" multiple />
-      <button style="margin-right: auto">Load annotations</button>
-      <button style="margin-left: auto" class="secondary">Export</button>
+      <button style="margin-right: auto" data-component="loadButton">Load Data</button>
+      <button style="margin-left: auto" class="secondary" data-component="exportButton">Export Data</button>
     </div>
     <main class="main">
       <div data-component="imagesPanel" class="side-panel side-panel--images">
-        <button data-component="toggleImagesPanelButton" class="side-panel__toggle" title="Show/Hide Images">
+        <button data-component="toggleImagesPanelButton" class="side-panel__toggle side-panel__toggle--images" title="Show/Hide Images">
           Images
         </button>
         <div data-component="imageListContainer" class="image-list-container"></div>
@@ -27,7 +28,11 @@
       <div data-component="imageSection" class="image-section">
         <div data-component="canvasContainer" class="canvas-container">
           <canvas data-component="canvas" class="canvas"></canvas>
-          <div class="editor">
+          <div class="editor" data-component="editor">
+            <div class="image-offset">
+              <span data-component="imageOffset"></span>
+              <button class="reset-image-position" data-component="resetImagePosition">Reset Image Position</button>
+            </div>
             <div class="mouse-position" data-component="mousePosition">
               <span class="mouse-dot"></span>
               <span class="mouse-line top" data-component="mouseLineTop"></span>
@@ -60,7 +65,7 @@
       </div>
   
       <div data-component="annotationsPanel" class="side-panel side-panel--annotations">
-        <button data-component="toggleAnnotationsPanelButton" class="side-panel__toggle" title="Show/Hide Annotations">
+        <button data-component="toggleAnnotationsPanelButton" class="side-panel__toggle side-panel__toggle--annotations" title="Show/Hide Annotations">
           Annotations
         </button>
         <div data-component="annotationListContainer" class="annotation-list-container"></div>

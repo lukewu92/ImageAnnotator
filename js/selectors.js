@@ -12,18 +12,15 @@ export const createImage = (src) => {
   return imgElem;
 };
 
-{
-  /* <div class="mouse-position" data-component="mousePosition">
-  <span class="mouse-dot"></span>
-  <span class="mouse-line top" data-component="mouseLineTop"></span>
-  <span class="mouse-line bottom" data-component="mouseLineBottom"></span>
-  <span class="mouse-line left" data-component="mouseLineLeft"></span>
-  <span class="mouse-line right" data-component="mouseLineRight"></span>
-  <span class="mouse-coordinates" data-component="mouseCoordinates">
-    x: 74, y: 74
-  </span>
-</div> */
-}
+export const DataLoader = document.querySelector(
+  '[data-component="dataLoader"]'
+);
+export const ExportButton = document.querySelector(
+  '[data-component="exportButton"]'
+);
+export const LoadButton = document.querySelector(
+  '[data-component="loadButton"]'
+);
 export const MousePosition = document.querySelector(
   '[data-component="mousePosition"]'
 );
@@ -73,6 +70,11 @@ export const AnnotationsListContainer = document.querySelector(
 export const ImageCache = document.querySelector(
   '[data-component="imageCache"]'
 );
+
+export const ImageOffset = document.querySelector(
+  '[data-component="imageOffset"]'
+);
+
 export const CanvasContainer = document.querySelector(
   '[data-component="canvasContainer"]'
 );
@@ -97,3 +99,7 @@ export const UploadImageButton = document.querySelector(
   '[data-component="uploadImageButton"]'
 );
 export const FileInput = document.querySelector('[data-component="fileInput"]');
+export const ResetImagePositionButton = document.querySelector(
+  '[data-component="resetImagePosition"]'
+);
+export const Editor = document.querySelector('[data-component="editor"]');

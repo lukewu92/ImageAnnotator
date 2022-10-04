@@ -18,6 +18,7 @@ export class ImagesPanel {
     this.imagesPanel = ImagesPanelElement;
     this.toggleImagesPanelButton = ToggleImagesPanelButton;
     this.imageList = ImageListContainer;
+    this.prevActiveIndex = null;
     this.previousFilesJSON = null;
     this.previousSelectedFileIndex = null;
   }
@@ -36,18 +37,20 @@ export class ImagesPanel {
     const imagesPanelVisible = this.getState().imagesPanelVisible;
     if (imagesPanelVisible && this.imagesPanel.classList.contains("hidden")) {
       this.imagesPanel.classList.remove("hidden");
+      this.toggleImagesPanelButton.textContent = "Hide Images";
     } else if (
       !imagesPanelVisible &&
       !this.imagesPanel.classList.contains("hidden")
     ) {
       this.imagesPanel.classList.add("hidden");
+      this.toggleImagesPanelButton.textContent = "Show Images";
     }
 
     // Handle file list updates
     const files = this.getImageData().files;
-    if (this.previousFilesJSON !== JSON.stringify(files)) {
-      this.previousFilesJSON = JSON.stringify(files);
-
+    const fileLength = files.length;
+    if (this.prevFileLength !== fileLength) {
+      this.prevFileLength = fileLength;
       removeAllChildNodes(this.imageList);
 
       files.forEach((file, index) => {
@@ -66,21 +69,23 @@ export class ImagesPanel {
 
     // Handle file selection
     if (
-      this.previousSelectedFileIndex !== this.getState()?.selectedFileIndex &&
-      files.length > 0
+      files.length > 0 &&
+      this.previousSelectedFileIndex !== this.getState()?.selectedFileIndex
     ) {
       this.previousSelectedFileIndex = this.getState()?.selectedFileIndex;
       const allImages = document.querySelectorAll(".image-list-item");
-      allImages.forEach((image) => {
-        image.classList.remove("active");
+      allImages.forEach((image, index) => {
+        console.log("index", index);
+        if (this.getState()?.selectedFileIndex === index) {
+          if (!image?.classList?.contains("active")) {
+            image?.classList?.add("active");
+          }
+        } else {
+          if (image?.classList?.contains("active")) {
+            image.classList.remove("active");
+          }
+        }
       });
-
-      const activeImage = document.querySelector(
-        `[data-image-file-index="${String(
-          this.getState()?.selectedFileIndex
-        )}"]`
-      );
-      activeImage?.classList?.add("active");
     }
   }
 }
