@@ -79,6 +79,7 @@ export class Canvas {
       temporaryImageOffset: null,
       mouseDownAnnotation: null,
       draggingAnnotationOffset: null,
+      temporaryLineOffset: null,
     });
   }
 
@@ -286,7 +287,7 @@ export class Canvas {
             y: clamp(
               offsetY,
               -insideAnnotationY,
-              imgWidth - insideAnnotationY - insideAnnotationHeight
+              imgHeight - insideAnnotationY - insideAnnotationHeight
             ),
           },
         });
@@ -653,6 +654,7 @@ export class Canvas {
         0 - mouseDownPosition.y,
         imgHeight
       );
+      console.log("offsetY", offsetY);
       this.drawRect(initialX, initialY, offsetX, offsetY);
     }
 
