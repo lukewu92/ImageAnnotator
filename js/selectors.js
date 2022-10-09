@@ -14,8 +14,9 @@ export const createImage = (src) => {
 
 export const createSpan = () => document.createElement("span");
 
-export const MoveButton = () =>
-  document.querySelector('[data-component"moveButton"]');
+export const MoveButton = document.querySelector(
+  `[data-component="moveButton"]`
+);
 
 export const AppElement = document.querySelector(`[data-component="app"]`);
 

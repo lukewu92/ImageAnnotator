@@ -119,7 +119,6 @@ class MainApp {
 
     //Load storage data
     if (this.imageData?.files) {
-      console.log("files");
       // Generate blobs
       const files = this.imageData?.files;
       const processedImageData = [];

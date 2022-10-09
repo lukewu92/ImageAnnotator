@@ -87,7 +87,7 @@ export class Canvas {
       mouseDownAnnotation: null,
       draggingAnnotationOffset: null,
       temporaryLineOffset: null,
-      moveOnTouch: false,
+      moveOnTouch: all ? false : this.getState()?.moveOnTouch,
     });
   }
 
@@ -246,13 +246,7 @@ export class Canvas {
     // clearAnnotationsFunction =
 
     this.clearDefaults(true);
-    // Init move button for mobile device
-    this.moveButton.onclick = () => {
-      const state = this.getState();
-      this.setState({
-        moveOnTouch: !state?.moveOnTouch,
-      });
-    };
+
     // Detect size changes for element, works better than window.onresize
     const resize_ob = new ResizeObserver((entries) => {
       let rect = entries[0].contentRect;
@@ -309,7 +303,7 @@ export class Canvas {
     const mouseUpEvent = (e) => {
       const state = this.getState();
       const zoom = this.getState()?.zoom;
-      if (e && (e.which == 0 || e.which == 1 || e.button == 0)) {
+      if (this.hasLeftClicked()) {
         const imgInfo = this.getImageInfo();
 
         // Check if there is box, if so, create a new annotation
@@ -387,7 +381,7 @@ export class Canvas {
         }
       }
 
-      if (e && (e.which == 2 || e.button == 4)) {
+      if (this.hasMiddleClicked()) {
         this.setState({
           mouseMiddleDown: null,
           mouseMiddleDownPosition: null,
@@ -413,6 +407,15 @@ export class Canvas {
       }
 
       this.clearDefaults();
+    };
+
+    // Move button for mobile device
+
+    this.moveButton.onclick = () => {
+      const state = this.getState();
+      this.setState({
+        moveOnTouch: !state?.moveOnTouch,
+      });
     };
 
     // Reset offset button
@@ -733,6 +736,8 @@ export class Canvas {
     const imageData = this.getImageData();
     const selectedFile =
       this.getImageData()?.files[this.getState()?.selectedFileIndex];
+
+    this.moveButton.classList.toggle("active", state.moveOnTouch);
 
     if (selectedFile && this?.canvasImage?.src !== selectedFile.src) {
       this.canvasImage.src = selectedFile.src;

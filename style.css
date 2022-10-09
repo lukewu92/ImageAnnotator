@@ -170,11 +170,6 @@ button:disabled {
   margin-left: auto;
 }
 
-.side-panel__toggle--images {
-  margin-right: auto;
-  margin-left: unset;
-}
-
 .side-panel.hidden {
   width: 0;
   padding-left: 0;
@@ -200,9 +195,12 @@ button:disabled {
 .side-panel.hidden .side-panel__toggle {
   transform: translateX(min(-100% - var(--spacing)));
 }
+.side-panel--images .side-panel__toggle {
+  margin-left: unset;
+}
 .side-panel--images.hidden .side-panel__toggle {
-  transform: translateX(min(-100% - var(--spacing)))
-    translateY(min(100% + 12px));
+  margin-right: unset;
+  transform: translateX(calc(var(--spacing) * 2));
 }
 
 .image-section {
@@ -529,6 +527,10 @@ button.move-button {
   }
   .side-panel:not(.hidden) .side-panel__toggle {
     margin: 12px;
+  }
+  .side-panel--images.hidden .side-panel__toggle {
+    transform: translateX(min(-100% - var(--spacing)))
+      translateY(min(100% + 12px));
   }
   button.move-button {
     display: flex;
