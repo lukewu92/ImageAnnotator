@@ -14,7 +14,10 @@ Develop an Image annotator web application with just vanillaJS without using any
 - Export and load data (images and annotations data) - Due to browser storage limitations, this is the best approach.
 - Left click on picture to draw boxes
 - Middle click to position image for bigger images
-- Mobile Responsive Design (UI wise works but didn't have enough time to fix touch events bug and develop pinch feature to zoom and out)
+- Mobile Responsive Design
+- Support Zoom scaling
+- Support Touch events
+- Added move button for mobile devices to position images
 
 ## Thought process and ideation
 
