@@ -1,5 +1,10 @@
-import { AnnotationsListContainer, AnnotationsPanelElement, ToggleAnnotationsPanelButton } from '../selectors.js';
-import { removeAllChildNodes } from '../util/element.js';
+import {
+  AnnotationsListContainer,
+  AnnotationsPanelElement,
+  AppElement,
+  ToggleAnnotationsPanelButton,
+} from "../selectors.js";
+import { removeAllChildNodes } from "../util/element.js";
 
 export class AnnotationsPanel {
   constructor(getGettersAndSetters) {
@@ -21,6 +26,7 @@ export class AnnotationsPanel {
     this.annotationList = AnnotationsListContainer;
     this.prevAnnotationDataJSON = null;
     this.prevSelectedIndex = null;
+    this.appElement = AppElement;
   }
 
   init() {
@@ -62,7 +68,6 @@ export class AnnotationsPanel {
     };
     this.setAnnotationData({ [imageName]: annotations });
   };
-
   drawListOfAnnotations = () => {
     const annotations = this.getImageAnnotationInfo();
     const selectedAnnotationIndex =
@@ -82,6 +87,18 @@ export class AnnotationsPanel {
       inputElem.value = label;
       inputElem.onchange = (e) => {
         this.updateAnnotationLabel(index, e.target.value);
+      };
+      inputElem.onkeydown = (e) => {
+        if (e.key === "Delete" && e.target.value === "") {
+          this.deleteAnnotationAtIndex(index);
+        }
+        // Close annotation for mobile device to avoid disruption
+        if (e.key === "Enter") {
+          const deviceWidth = document.documentElement.clientWidth;
+          if (deviceWidth <= 639) {
+            this.setState({ annotationsPanelVisible: false });
+          }
+        }
       };
       inputElem.onfocus = () =>
         this.setAnnotationData({
@@ -127,6 +144,8 @@ export class AnnotationsPanel {
 
   redraw = () => {
     const annotationsPanelVisible = this.getState().annotationsPanelVisible;
+    const hideOtherPanel =
+      document.documentElement.clientWidth <= 639 && annotationsPanelVisible;
     const imageAnnotationInfo = this.getImageAnnotationInfo();
     const selectedAnnotationIndex =
       this?.getAnnotationData()?.selectedAnnotationIndex;
@@ -135,6 +154,8 @@ export class AnnotationsPanel {
       this.prevSelectedIndex = selectedAnnotationIndex;
       this.higlightSelectedItem();
     }
+
+    this.appElement.classList.toggle("overlay-visible", hideOtherPanel);
 
     if (
       annotationsPanelVisible &&

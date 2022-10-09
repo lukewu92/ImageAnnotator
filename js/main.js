@@ -1,5 +1,15 @@
-import { AnnotationsPanel, Canvas, ImageInfo, ImagesPanel, UploadButton } from './components/index.js';
-import { ANNOTATION_DATA_KEY, APP_STATE_KEY, IMAGE_DATA_KEY } from './constants/localStorageKeys.js';
+import {
+  AnnotationsPanel,
+  Canvas,
+  ImageInfo,
+  ImagesPanel,
+  UploadButton,
+} from "./components/index.js";
+import {
+  ANNOTATION_DATA_KEY,
+  APP_STATE_KEY,
+  IMAGE_DATA_KEY,
+} from "./constants/localStorageKeys.js";
 import {
   ClearAllAnnotationButton,
   DataLoader,
@@ -9,8 +19,11 @@ import {
   NextButton,
   PreviousButton,
   UploadImageButton,
-} from './selectors.js';
-import { base64ToBlob } from './util/base64ToBlob.js';
+  ZoomAmount,
+  ZoomIn,
+  ZoomOut,
+} from "./selectors.js";
+import { base64ToBlob } from "./util/base64ToBlob.js";
 
 const defaultImageData = {
   files: [],
@@ -84,6 +97,9 @@ class MainApp {
     this.loadButton = LoadButton;
     this.exportButton = ExportButton;
     this.dataLoader = DataLoader;
+    this.zoomAmount = ZoomAmount;
+    this.zoomIn = ZoomIn;
+    this.zoomOut = ZoomOut;
 
     // Bind getters and setters to component
     this.canvas = new Canvas(this.getGettersAndSetters);
@@ -109,13 +125,22 @@ class MainApp {
       const processedImageData = [];
       files.forEach((file) => {
         const base64Data = file.base64Data;
-        const blob = base64ToBlob(base64Data, "image/jpeg");
-        const src = URL.createObjectURL(blob);
-        processedImageData.push({
-          ...file,
-          src,
-          base64Data,
-        });
+        try {
+          const blob = base64ToBlob(base64Data, "image/jpeg");
+          const src = URL.createObjectURL(blob);
+          processedImageData.push({
+            ...file,
+            src,
+            base64Data,
+          });
+        } catch (e) {
+          alert(
+            `${file.name} data is corrupted. This can be due to storage limitation causing partial bytes to be stored.`
+          );
+          console.error(
+            `${file.name} data is corrupted. This can be due to storage limitation causing partial bytes to be stored`
+          );
+        }
       });
       this.setImageData({
         files: processedImageData,
@@ -189,6 +214,18 @@ class MainApp {
       });
     };
 
+    // Zoom functionality
+    this.zoomIn.onclick = (e) => {
+      this.setState({
+        zoom: this.state?.zoom * 2,
+      });
+    };
+    this.zoomOut.onclick = (e) => {
+      this.setState({
+        zoom: this.state?.zoom / 2,
+      });
+    };
+
     this.redraw();
   };
 
@@ -226,10 +263,19 @@ class MainApp {
         ...this.imageData,
         ...newData,
       };
-      window.localStorage.setItem(
-        IMAGE_DATA_KEY,
-        JSON.stringify(this.imageData)
-      );
+      try {
+        window.localStorage.setItem(
+          IMAGE_DATA_KEY,
+          JSON.stringify(this.imageData)
+        );
+      } catch (e) {
+        if (String(e).includes("exceeded the quota")) {
+          alert(
+            "Image size has exceeded browser storage limit! Please use the export button to save your data to prevent losing your changes!"
+          );
+        }
+        console.error(e);
+      }
       this.redraw();
     }
   }

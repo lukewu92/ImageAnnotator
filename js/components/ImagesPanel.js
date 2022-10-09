@@ -1,11 +1,12 @@
 import {
   createImage,
   createImageListItem,
+  createSpan,
   ImageListContainer,
   ImagesPanelElement,
   ToggleImagesPanelButton,
-} from '../selectors.js';
-import { removeAllChildNodes } from '../util/element.js';
+} from "../selectors.js";
+import { removeAllChildNodes } from "../util/element.js";
 
 export class ImagesPanel {
   constructor(getGettersAndSetters) {
@@ -57,7 +58,10 @@ export class ImagesPanel {
         const listItem = createImageListItem();
         listItem.dataset.imageFileIndex = index;
         const imageElem = createImage(file.src);
+        const textElement = createSpan();
+        textElement.textContent = file?.name;
         listItem.appendChild(imageElem);
+        listItem.appendChild(textElement);
 
         listItem.addEventListener("click", () =>
           this.setState({ selectedFileIndex: index })

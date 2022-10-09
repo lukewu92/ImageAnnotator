@@ -47,6 +47,7 @@ body {
 }
 
 body {
+  font-family: 'Roboto', sans-serif;
   margin: 0;
   padding: 0;
   background-color: var(--bg);
@@ -82,13 +83,14 @@ body {
   transform: translate(-50%, -50%);
 }
 
-.main {
+main {
   flex: 1;
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   gap: var(--spacing);
+  position: relative;
 }
 
 button {
@@ -131,7 +133,11 @@ button:disabled {
   pointer-events: none;
   opacity: 0.5;
 }
-
+.bottom-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing);
+}
 .side-panel {
   width: var(--side-panel-size);
   position: relative;
@@ -149,6 +155,7 @@ button:disabled {
 }
 .side-panel:not(.hidden) {
   overflow-y: auto;
+  z-index: 99999;
 }
 
 .side-panel > * {
@@ -174,14 +181,11 @@ button:disabled {
   padding-right: 0;
   background: transparent;
   pointer-events: none;
-  margin-left: -16px;
+  margin-left: calc(0px - var(--spacing));
 }
-.side-panel.hidden > * {
+.side-panel.hidden > *:not(button) {
   opacity: 0;
-}
-.side-panel.side-panel--images.hidden {
-  margin-left: unset;
-  margin-right: min(0px - var(--spacing));
+  padding: 0;
 }
 
 .side-panel.hidden .side-panel__toggle {
@@ -197,52 +201,8 @@ button:disabled {
   transform: translateX(min(-100% - var(--spacing)));
 }
 .side-panel--images.hidden .side-panel__toggle {
-  transform: translateX(16px);
-}
-
-@media (max-width: 639px) {
-  .side-panel {
-    position: absolute;
-    top: min(56px + 32px);
-    max-height: 50vh;
-    box-shadow: 0 0 1px #fff, 0 0 3px #fff, 0 0 7px #0ba9ca, 0 0 2px #184953,
-      0 0 1px #0ba9ca, 0 0 3px #0ba9ca;
-    padding: 0;
-    gap: 0;
-    z-index: 9999;
-  }
-  .side-panel--annotations {
-    right: 24px;
-    background-color: rgb(30 41 59 / 70%);
-  }
-  .side-panel--images {
-    left: 24px;
-  }
-  .side-panel__toggle {
-    margin: 12px;
-    pointer-events: auto;
-  }
-  .side-panel__toggle--images.side-panel__toggle--images.side-panel__toggle--images {
-    transform: translateX(4px);
-    margin: 12px 0;
-  }
-  .side-panel__toggle--annotations {
-    margin-left: auto;
-  }
-  .annotation-list-container,
-  .image-list-container {
-    flex: 1;
-    padding: 16px;
-    overflow: auto;
-    gap: 16px;
-  }
-  .image-list-item {
-    max-width: min(50% - 8px);
-    pointer-events: auto;
-  }
-  .annotation-list-item {
-    pointer-events: auto;
-  }
+  transform: translateX(min(-100% - var(--spacing)))
+    translateY(min(100% + 12px));
 }
 
 .image-section {
@@ -304,6 +264,7 @@ button:disabled {
   display: flex;
   flex-wrap: wrap;
   gap: var(--spacing);
+  flex: unset;
 }
 .image-list-item {
   width: 120px;
@@ -314,10 +275,41 @@ button:disabled {
   cursor: pointer;
   background-color: var(--bg);
   border-radius: 8px;
-  overflow: hidden;
   transition: all 0.2s ease;
   opacity: 0.7;
+  position: relative;
   /* animation: fadeInImage ease forwards; */
+  margin-bottom: 24px;
+  white-space: nowrap;
+}
+.image-list-item > span {
+  font-size: 12px;
+  overflow: hidden;
+  position: absolute;
+  top: min(100% + 8px);
+  max-width: min(100% - 16px);
+  text-overflow: ellipsis;
+}
+
+.image-zoom {
+  position: absolute;
+  bottom: var(--spacing);
+  left: var(--spacing);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgb(0 0 0 / 60%);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  color: #fff;
+}
+.image-zoom-button {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
 }
 
 .image-list-item img {
@@ -355,6 +347,7 @@ button:disabled {
   background: var(--bg);
   border-radius: 8px;
   transition: all 0.3s ease;
+  gap: 12px;
   /* animation: fadeInAnnotation 0.3s ease forwards; */
 }
 .annotation-list-item.highlight {
@@ -384,7 +377,6 @@ button:disabled {
   border-radius: 50%;
   width: 1px;
   height: 1px;
-  transition: all 0.01s ease;
   pointer-events: none;
 }
 .image-offset {
@@ -400,10 +392,12 @@ button:disabled {
   font-weight: 600;
   pointer-events: none;
   z-index: 10;
+  text-align: center;
+  width: fit-content;
 }
 .reset-image-position {
   position: absolute;
-  bottom: -36px;
+  bottom: -34px;
   left: 50%;
   transform: translateX(-50%);
 }
@@ -471,25 +465,83 @@ button:disabled {
   opacity: 1;
   outline: 2px solid white;
 }
-
-/* @keyframes fadeInAnnotation {
-  0% {
-    opacity: 0;
-    transform: translateX(100%);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
+button.move-button {
+  display: none;
+  font-size: 16px;
 }
 
-@keyframes fadeInImage {
-  0% {
-    opacity: 0;
-    transform: scale(0);
+@media (max-width: 639px) {
+  :root {
+    --spacing: 12px;
+    --padding: 12px;
   }
-  100% {
-    opacity: 1;
-    transform: scale(1);
+  .image-offset {
+    height: fit-content;
+    font-size: 12px;
+    left: unset;
+    top: unset;
+    bottom: 46px;
+    right: var(--spacing);
+    transform: unset;
   }
-} */
+  .reset-image-position {
+    bottom: -30px;
+    transform: unset;
+    right: 0;
+    left: unset;
+    font-size: 12px;
+  }
+  .side-panel {
+    position: absolute;
+    top: 0;
+    max-height: 100%;
+    box-shadow: 0 0 1px #fff, 0 0 3px #fff, 0 0 7px #0ba9ca, 0 0 2px #184953,
+      0 0 1px #0ba9ca, 0 0 3px #0ba9ca;
+    padding: 0;
+    width: 100%;
+    gap: 0;
+    z-index: 9999;
+  }
+  .side-panel--annotations {
+    right: 0;
+    background-color: rgb(30 41 59 / 70%);
+  }
+  .side-panel--images {
+    right: 0;
+  }
+  .side-panel__toggle {
+    margin: unset;
+    margin-top: 12px;
+    pointer-events: auto;
+  }
+  .annotation-list-container,
+  .image-list-container {
+    padding: var(--spacing);
+    overflow: auto;
+    gap: var(--spacing);
+  }
+  .image-list-item {
+    pointer-events: auto;
+    flex: 1 45%;
+  }
+  .annotation-list-item {
+    pointer-events: auto;
+  }
+  .side-panel:not(.hidden) .side-panel__toggle {
+    margin: 12px;
+  }
+  button.move-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: var(--spacing);
+    left: var(--spacing);
+    width: 32px;
+    height: 32px;
+  }
+  button.move-button.active {
+    color: #000000;
+    background-color: #ffffff;
+  }
+}

@@ -12,6 +12,13 @@ export const createImage = (src) => {
   return imgElem;
 };
 
+export const createSpan = () => document.createElement("span");
+
+export const MoveButton = () =>
+  document.querySelector('[data-component"moveButton"]');
+
+export const AppElement = document.querySelector(`[data-component="app"]`);
+
 export const DataLoader = document.querySelector(
   '[data-component="dataLoader"]'
 );
@@ -107,3 +114,9 @@ export const ResetImagePositionButton = document.querySelector(
   '[data-component="resetImagePosition"]'
 );
 export const Editor = document.querySelector('[data-component="editor"]');
+
+export const ZoomIn = document.querySelector('[data-component="zoom-in"]');
+export const ZoomOut = document.querySelector('[data-component="zoom-out"]');
+export const ZoomAmount = document.querySelector(
+  '[data-component="zoom-amount"]'
+);
