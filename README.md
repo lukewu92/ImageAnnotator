@@ -1,5 +1,7 @@
 # Image Annotator
 
+![](https://github.com/lukewu92/ImageAnnotator/blob/main/preview.gif)
+
 ## Requirements
 Develop an Image annotator web application with just vanillaJS without using any external libraries.
 
