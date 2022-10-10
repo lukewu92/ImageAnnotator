@@ -258,6 +258,11 @@ button:disabled {
   text-align: center;
 }
 
+input {
+  font-size: 1rem;
+  width: 100%;
+}
+
 .image-list-container {
   display: flex;
   flex-wrap: wrap;

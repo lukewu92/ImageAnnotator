@@ -140,6 +140,7 @@ export class Canvas {
       // Select annotation index instead
       if (isInAnAnnotation) {
         return this.setState({
+          mouseDown: true,
           mouseDownAnnotation: {
             index: annotationsIndexInBoundary,
             mouseInBoundaryX,
@@ -303,6 +304,7 @@ export class Canvas {
     const mouseUpEvent = (e) => {
       const state = this.getState();
       const zoom = this.getState()?.zoom;
+
       if (this.hasLeftClicked()) {
         const imgInfo = this.getImageInfo();
 
@@ -324,6 +326,7 @@ export class Canvas {
               annotations[selectedAnnotationIndex].y +
               draggingAnnotationOffset.y,
           };
+
           // Update annotation data
           this.setAnnotationData({ [imageName]: annotations });
           if (
