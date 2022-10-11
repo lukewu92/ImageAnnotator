@@ -29,6 +29,7 @@ import { isMobileView } from "./util/window.js";
 const defaultImageData = {
   files: [],
 };
+
 const defaultState = {
   imagesPanelVisible: !isMobileView(),
   annotationsPanelVisible: !isMobileView(),
@@ -46,6 +47,8 @@ const defaultState = {
 };
 
 const defaultAnnotationData = {};
+
+let hasShownError = false;
 
 class MainApp {
   constructor() {
@@ -170,6 +173,7 @@ class MainApp {
       const files = this.dataLoader.files;
       var reader = new FileReader();
       reader.onload = (e) => {
+        hasShownError = false;
         const dataObject = JSON.parse(e.target.result);
         // Generate blobs
         const files = dataObject?.imageData?.files;
@@ -273,9 +277,12 @@ class MainApp {
         );
       } catch (e) {
         if (String(e).includes("exceeded the quota")) {
-          alert(
-            "Image size has exceeded browser storage limit! Please use the export button to save your data to prevent losing your changes!"
-          );
+          if (!hasShownError) {
+            alert(
+              "Image size has exceeded browser storage limit! Please use the export button to save your data to prevent losing your changes!"
+            );
+            hasShownError = true;
+          }
         }
         console.error(e);
       }
