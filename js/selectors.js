@@ -1,4 +1,8 @@
-export const createTextField = () => document.createElement("input");
+export const createTextField = () => {
+  const textField = document.createElement("div");
+  textField.contentEditable = true;
+  return textField;
+};
 
 export const createImageListItem = () => {
   const element = document.createElement("div");
@@ -58,6 +62,9 @@ export const ImagesPanelElement = document.querySelector(
 export const ToggleImagesPanelButton = document.querySelector(
   '[data-component="toggleImagesPanelButton"]'
 );
+export const ToggleImagesPanelButtonText = document.querySelector(
+  '[data-component="toggleImagesPanelButtonText"]'
+);
 export const ImageListContainer = document.querySelector(
   '[data-component="imageListContainer"]'
 );
@@ -70,6 +77,9 @@ export const AnnotationsPanelElement = document.querySelector(
 );
 export const ToggleAnnotationsPanelButton = document.querySelector(
   '[data-component="toggleAnnotationsPanelButton"]'
+);
+export const ToggleAnnotationsPanelButtonText = document.querySelector(
+  '[data-component="toggleAnnotationsPanelButtonText"]'
 );
 export const AnnotationsListContainer = document.querySelector(
   '[data-component="annotationListContainer"]'

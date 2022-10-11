@@ -1,4 +1,5 @@
 import {
+  AppElement,
   CanvasContainer,
   CanvasElement,
   ClearAllAnnotationButton,
@@ -17,6 +18,7 @@ import {
 } from "../selectors.js";
 import { startRequestAnimation } from "../util/animationFrame.js";
 import { clamp } from "../util/number.js";
+import { isMobileView } from "../util/window.js";
 
 export class Canvas {
   constructor(getGettersAndSetters) {
@@ -65,6 +67,7 @@ export class Canvas {
     this.resetImagePositionButton = ResetImagePositionButton;
     this.zoomAmount = ZoomAmount;
     this.moveButton = MoveButton;
+    this.appElement = AppElement;
 
     this.canvasImage = document.createElement("img");
     this.ctx = this.canvas.getContext("2d");
@@ -103,7 +106,6 @@ export class Canvas {
       `[data-annotation-field-index="${index}"]`
     );
     inputField.focus();
-    inputField.select();
   };
 
   onMouseDownOrTouchStart = (clientX, clientY, isDragEvent) => {
@@ -330,8 +332,9 @@ export class Canvas {
           // Update annotation data
           this.setAnnotationData({ [imageName]: annotations });
           if (
-            draggingAnnotationOffset.x === 0 &&
-            draggingAnnotationOffset.y === 0
+            (draggingAnnotationOffset.x === 0 &&
+              draggingAnnotationOffset.y === 0) ||
+            !isMobileView()
           ) {
             this.focusField(selectedAnnotationIndex);
           }
@@ -741,6 +744,26 @@ export class Canvas {
       this.getImageData()?.files[this.getState()?.selectedFileIndex];
 
     this.moveButton.classList.toggle("active", state.moveOnTouch);
+
+    // Add/remove overlay-visible class to app
+    const imagesPanelVisible = state.imagesPanelVisible;
+    const annotationsPanelVisible = state.annotationsPanelVisible;
+    const hideOtherPanel =
+      document.documentElement.clientWidth <= 639 &&
+      (imagesPanelVisible || annotationsPanelVisible);
+
+    if (
+      hideOtherPanel &&
+      !this.appElement.classList.contains("overlay-visible")
+    ) {
+      this.appElement.classList.add("overlay-visible");
+    }
+    if (
+      !hideOtherPanel &&
+      this.appElement.classList.contains("overlay-visible")
+    ) {
+      this.appElement.classList.remove("overlay-visible");
+    }
 
     if (selectedFile && this?.canvasImage?.src !== selectedFile.src) {
       this.canvasImage.src = selectedFile.src;

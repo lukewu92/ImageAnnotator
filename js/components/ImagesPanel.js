@@ -5,6 +5,7 @@ import {
   ImageListContainer,
   ImagesPanelElement,
   ToggleImagesPanelButton,
+  ToggleImagesPanelButtonText,
 } from "../selectors.js";
 import { removeAllChildNodes } from "../util/element.js";
 
@@ -18,6 +19,7 @@ export class ImagesPanel {
     this.setState = setState;
     this.imagesPanel = ImagesPanelElement;
     this.toggleImagesPanelButton = ToggleImagesPanelButton;
+    this.toggleImagesPanelButtonText = ToggleImagesPanelButtonText;
     this.imageList = ImageListContainer;
     this.prevActiveIndex = null;
     this.previousFilesJSON = null;
@@ -25,26 +27,31 @@ export class ImagesPanel {
   }
 
   init() {
+    this.setState({ initializedImagePanel: true });
     this.previousFilesJSON = JSON.stringify(this.getImageData().files);
-    this.toggleImagesPanelButton.addEventListener("click", () =>
+    this.toggleImagesPanelButton.addEventListener("click", () => {
       this.setState({
         imagesPanelVisible: !this.getState().imagesPanelVisible,
-      })
-    );
+      });
+      this.redraw();
+    });
   }
 
   redraw() {
+    const state = this.getState();
+    if (!state?.["initializedImagePanel"]) return;
     // Toggle visibility
-    const imagesPanelVisible = this.getState().imagesPanelVisible;
+    const imagesPanelVisible = state.imagesPanelVisible;
+
     if (imagesPanelVisible && this.imagesPanel.classList.contains("hidden")) {
       this.imagesPanel.classList.remove("hidden");
-      this.toggleImagesPanelButton.textContent = "Hide Images";
+      this.toggleImagesPanelButtonText.textContent = "Hide Images";
     } else if (
       !imagesPanelVisible &&
       !this.imagesPanel.classList.contains("hidden")
     ) {
       this.imagesPanel.classList.add("hidden");
-      this.toggleImagesPanelButton.textContent = "Show Images";
+      this.toggleImagesPanelButtonText.textContent = "Show Images";
     }
 
     // Handle file list updates

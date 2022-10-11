@@ -36,13 +36,32 @@
         </button>
       </div>
       <main>
-        <div data-component="imagesPanel" class="side-panel side-panel--images">
+        <div
+          data-component="imagesPanel"
+          class="side-panel side-panel--images hidden"
+        >
           <button
             data-component="toggleImagesPanelButton"
             class="side-panel__toggle side-panel__toggle--images"
             title="Show/Hide Images"
           >
-            Images
+            <span
+              data-component="toggleImagesPanelButtonText"
+              class="toggle-label"
+              >Images</span
+            >
+            <svg
+              width="1em"
+              height="1em"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M5 3H19V14H17V16H15V18H1V7H3V5H5V3ZM18 13V4H6V13H18ZM15 9C13.9 9 13 8.1 13 7C13 5.9 13.9 5 15 5C16.1 5 17 5.9 17 7C17 8.1 16.1 9 15 9ZM16 15V14H5V6H4V15H16ZM7 6L17 12H7V6ZM14 17V16H3V8H2V17H14Z"
+                fill="currentColor"
+              />
+            </svg>
           </button>
           <div
             data-component="imageListContainer"
@@ -124,7 +143,7 @@
                 class="small-icon"
                 title="previous"
               >
-                <img src="/images/left.svg" alt="Previous" />
+                <img src="./images/left.svg" alt="Previous" />
               </button>
               <div data-component="selected-file-name" class="file-name">
                 somerandomname.png
@@ -170,14 +189,33 @@
 
         <div
           data-component="annotationsPanel"
-          class="side-panel side-panel--annotations"
+          class="side-panel side-panel--annotations hidden"
         >
           <button
             data-component="toggleAnnotationsPanelButton"
             class="side-panel__toggle side-panel__toggle--annotations"
             title="Show/Hide Annotations"
           >
-            Annotations
+            <span
+              data-component="toggleAnnotationsPanelButtonText"
+              class="toggle-label"
+              >Annotations</span
+            >
+            <svg
+              width="1em"
+              height="1em"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M5.83333 6.66666H14.1667M5.83333 10H9.16667M10 16.6667L6.66667 13.3333H4.16667C3.72464 13.3333 3.30072 13.1577 2.98816 12.8452C2.67559 12.5326 2.5 12.1087 2.5 11.6667V4.99999C2.5 4.55797 2.67559 4.13404 2.98816 3.82148C3.30072 3.50892 3.72464 3.33333 4.16667 3.33333H15.8333C16.2754 3.33333 16.6993 3.50892 17.0118 3.82148C17.3244 4.13404 17.5 4.55797 17.5 4.99999V11.6667C17.5 12.1087 17.3244 12.5326 17.0118 12.8452C16.6993 13.1577 16.2754 13.3333 15.8333 13.3333H13.3333L10 16.6667Z"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
           </button>
           <div
             data-component="annotationListContainer"

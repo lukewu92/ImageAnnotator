@@ -24,13 +24,14 @@ import {
   ZoomOut,
 } from "./selectors.js";
 import { base64ToBlob } from "./util/base64ToBlob.js";
+import { isMobileView } from "./util/window.js";
 
 const defaultImageData = {
   files: [],
 };
 const defaultState = {
-  imagesPanelVisible: true,
-  annotationsPanelVisible: true,
+  imagesPanelVisible: !isMobileView(),
+  annotationsPanelVisible: !isMobileView(),
   imageOffset: null,
   mouseDown: null,
   mouseDownPosition: null,
@@ -75,11 +76,14 @@ class MainApp {
 
     // Check stored states
     const appState = window.localStorage.getItem(APP_STATE_KEY);
+
     if (appState === null) {
       window.localStorage.setItem(APP_STATE_KEY, JSON.stringify(defaultState));
       this.state = defaultState;
     } else {
-      this.state = JSON.parse(appState);
+      this.state = defaultState;
+      // Disable getting state from local storage for now until I can decide what state should be persisted
+      // this.state = JSON.parse(appState);
     }
 
     // Bind global
@@ -110,13 +114,6 @@ class MainApp {
   }
 
   init = () => {
-    // Initialize components
-    this.imagesPanel.init();
-    this.annotationsPanel.init();
-    this.uploadButton.init();
-    this.canvas.init();
-    this.imageInfo.init();
-
     //Load storage data
     if (this.imageData?.files) {
       // Generate blobs
@@ -224,6 +221,13 @@ class MainApp {
         zoom: this.state?.zoom / 2,
       });
     };
+
+    // Initialize components
+    this.imagesPanel.init();
+    this.annotationsPanel.init();
+    this.uploadButton.init();
+    this.canvas.init();
+    this.imageInfo.init();
 
     this.redraw();
   };
