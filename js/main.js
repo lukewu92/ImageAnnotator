@@ -133,9 +133,9 @@ class MainApp {
             base64Data,
           });
         } catch (e) {
-          alert(
-            `${file.name} data is corrupted. This can be due to storage limitation causing partial bytes to be stored.`
-          );
+          // alert(
+          //   `${file.name} data is corrupted. This can be due to storage limitation causing partial bytes to be stored.`
+          // );
           console.error(
             `${file.name} data is corrupted. This can be due to storage limitation causing partial bytes to be stored`
           );
