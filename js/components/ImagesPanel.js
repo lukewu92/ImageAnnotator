@@ -6,8 +6,8 @@ import {
   ImagesPanelElement,
   ToggleImagesPanelButton,
   ToggleImagesPanelButtonText,
-} from "../selectors.js";
-import { removeAllChildNodes } from "../util/element.js";
+} from '../selectors.js';
+import { removeAllChildNodes } from '../util/element.js';
 
 export class ImagesPanel {
   constructor(getGettersAndSetters) {

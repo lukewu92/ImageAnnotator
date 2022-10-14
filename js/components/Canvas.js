@@ -15,10 +15,10 @@ import {
   MoveButton,
   ResetImagePositionButton,
   ZoomAmount,
-} from "../selectors.js";
-import { startRequestAnimation } from "../util/animationFrame.js";
-import { clamp } from "../util/number.js";
-import { isMobileView } from "../util/window.js";
+} from '../selectors.js';
+import { startRequestAnimation } from '../util/animationFrame.js';
+import { clamp } from '../util/number.js';
+import { isMobileView } from '../util/window.js';
 
 export class Canvas {
   constructor(getGettersAndSetters) {
@@ -533,12 +533,73 @@ export class Canvas {
 
     // Draw mini boxes to highlight edges, used for future update for user to resize their rects
     if (highlight) {
-      const rectSize = 10;
-      const halfSize = rectSize / rectSize;
-      // Draw top left
-      ctx.fillStyle = "#ffffff";
-      ctx.strokeStyle = "#000000";
-      ctx.rect(rectSize, rectSize, offsetX - halfSize, offsetY - halfSize);
+      const rectSize = 8;
+      const halfSize = rectSize / 2;
+      const tinyBoxProps = {
+        fillStyle: "#ff46df",
+        strokeStyle: "#ffffff",
+        lineWidth: 1,
+      };
+      ctx.fillStyle = tinyBoxProps.fillStyle;
+      ctx.strokeStyle = tinyBoxProps.strokeStyle;
+      ctx.strokeStyle = tinyBoxProps.strokeStyle;
+      ctx.lineWidth = tinyBoxProps.lineWidth;
+      const drawTinyBox = (x, y, width, height) => {
+        ctx.fillRect(x, y, width, height);
+        ctx.strokeRect(x, y, width, height);
+      };
+
+      // Top left
+      drawTinyBox(rectX - halfSize, rectY - halfSize, rectSize, rectSize);
+      // Top center
+      drawTinyBox(
+        rectX + offsetX / 2 - halfSize,
+        rectY - halfSize,
+        rectSize,
+        rectSize
+      );
+      // Top right
+      drawTinyBox(
+        rectX + offsetX - halfSize,
+        rectY - halfSize,
+        rectSize,
+        rectSize
+      );
+      // Center Right
+      drawTinyBox(
+        rectX + offsetX - halfSize,
+        rectY + offsetY / 2 - halfSize,
+        rectSize,
+        rectSize
+      );
+      // Center Bottom
+      drawTinyBox(
+        rectX + offsetX - halfSize,
+        rectY + offsetY - halfSize,
+        rectSize,
+        rectSize
+      );
+      // Bottom Center
+      drawTinyBox(
+        rectX + offsetX / 2 - halfSize,
+        rectY + offsetY - halfSize,
+        rectSize,
+        rectSize
+      );
+      // Bottom Left
+      drawTinyBox(
+        rectX - halfSize,
+        rectY + offsetY - halfSize,
+        rectSize,
+        rectSize
+      );
+      // Center Left
+      drawTinyBox(
+        rectX - halfSize,
+        rectY + offsetY / 2 - halfSize,
+        rectSize,
+        rectSize
+      );
     }
   }
 
